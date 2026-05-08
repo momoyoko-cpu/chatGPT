@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Legal Review Assistant</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d9e1ec;
+      --primary: #2854c5;
+      --primary-dark: #1d3f95;
+      --danger: #b42318;
+      --warning: #b54708;
+      --ok: #027a48;
+      --note: #475467;
+      --shadow: 0 16px 40px rgba(16, 24, 40, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #e8efff 0, transparent 28rem), var(--bg);
+      color: var(--ink);
+    }
+    header {
+      padding: 32px min(5vw, 56px) 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 44px); letter-spacing: -.04em; }
+    .subtitle { margin: 0; color: var(--muted); max-width: 760px; line-height: 1.6; }
+    .status {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 14px;
+      min-width: max-content;
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    main {
+      padding: 0 min(5vw, 56px) 48px;
+      display: grid;
+      grid-template-columns: minmax(320px, 430px) minmax(0, 1fr);
+      gap: 24px;
+    }
+    .card {
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .stack { display: grid; gap: 16px; }
+    label { font-weight: 700; font-size: 14px; display: block; margin-bottom: 8px; }
+    input[type="file"], select, textarea, input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      padding: 12px 13px;
+      font: inherit;
+    }
+    textarea { min-height: 155px; resize: vertical; line-height: 1.55; }
+    .drop {
+      border: 1.5px dashed #aebcce;
+      border-radius: 18px;
+      padding: 18px;
+      background: #fbfdff;
+    }
+    .hint { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 7px 0 0; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease, opacity .15s ease;
+    }
+    button:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    button.secondary { background: #eef2ff; color: var(--primary-dark); }
+    button.secondary:hover { background: #dfe7ff; }
+    .result-header { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 18px; }
+    .result-header h2 { margin: 0; font-size: 24px; }
+    .empty {
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+      padding: 34px;
+      text-align: center;
+      background: #fbfdff;
+    }
+    .summary {
+      white-space: pre-wrap;
+      line-height: 1.65;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .finding {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin: 12px 0;
+      background: #fff;
+    }
+    .finding h3 { margin: 8px 0 8px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-weight: 800;
+      font-size: 12px;
+      background: #eef2f6;
+      color: var(--note);
+    }
+    .High { background: #fee4e2; color: var(--danger); }
+    .Medium { background: #fef0c7; color: var(--warning); }
+    .Low { background: #dcfae6; color: var(--ok); }
+    .proposed {
+      border-left: 4px solid var(--ok);
+      background: #f6fef9;
+      padding: 12px 14px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+    }
+    dl { display: grid; gap: 10px; margin: 0; }
+    dt { font-weight: 800; color: #344054; }
+    dd { margin: 3px 0 0; color: #344054; line-height: 1.55; }
+    .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.5);
+      border-top-color: #fff;
+      animation: spin .8s linear infinite;
+    }
+    .loading .spinner { display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 940px) {
+      header { display: block; }
+      .status { display: inline-flex; margin-top: 18px; }
+      main { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Legal Review Assistant</h1>
+      <p class="subtitle">契約書や規程をアップロード、またはテキスト貼り付けでレビューします。Claude 連携、プレイブック選択、Word レポート、Excel 論点一覧の出力に対応しています。</p>
+    </div>
+    <div id="status" class="status">接続確認中…</div>
+  </header>
+
+  <main>
+    <section class="card stack" aria-label="Review controls">
+      <div class="drop">
+        <label for="document">ファイル（DOCX / XLSX / TXT）</label>
+        <input id="document" type="file" accept=".docx,.txt,.md,.xlsx,.xls,.csv">
+        <p class="hint">Word は本文抽出、Excel はシートを CSV 化してレビューします。</p>
+      </div>
+
+      <div>
+        <label for="text">または本文を貼り付け</label>
+        <textarea id="text" placeholder="ここにレビュー対象の契約条文を貼り付け…"></textarea>
+      </div>
+
+      <div>
+        <label for="playbook">プレイブック</label>
+        <select id="playbook"></select>
+        <p class="hint">`playbooks/` に .md または .txt を追加すると自動で表示されます。</p>
+      </div>
+
+      <div>
+        <label for="instructions">追加指示 / 重点観点</label>
+        <textarea id="instructions" placeholder="例：ベンダー側に有利な形で、責任制限・解除・知財を重点的に確認。"></textarea>
+      </div>
+
+      <div class="actions">
+        <button id="reviewBtn"><span class="spinner" aria-hidden="true"></span> レビュー開始</button>
+        <button id="clearBtn" class="secondary" type="button">クリア</button>
+      </div>
+      <p id="message" class="hint" role="status"></p>
+    </section>
+
+    <section class="card" aria-label="Review results">
+      <div class="result-header">
+        <h2>レビュー結果</h2>
+        <div class="actions">
+          <button id="docxBtn" class="secondary" disabled>Word 出力</button>
+          <button id="xlsxBtn" class="secondary" disabled>Excel 出力</button>
+        </div>
+      </div>
+      <div id="results" class="empty">レビューを実行すると、サマリーと論点がここに表示されます。</div>
+    </section>
+  </main>
+
+  <script>
+    const els = {
+      status: document.getElementById('status'),
+      document: document.getElementById('document'),
+      text: document.getElementById('text'),
+      playbook: document.getElementById('playbook'),
+      instructions: document.getElementById('instructions'),
+      reviewBtn: document.getElementById('reviewBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      docxBtn: document.getElementById('docxBtn'),
+      xlsxBtn: document.getElementById('xlsxBtn'),
+      message: document.getElementById('message'),
+      results: document.getElementById('results'),
+    };
+
+    let currentReview = null;
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[char]));
+    }
+
+    function setLoading(isLoading) {
+      els.reviewBtn.disabled = isLoading;
+      els.reviewBtn.classList.toggle('loading', isLoading);
+    }
+
+    async function apiJson(url, options = {}) {
+      const response = await fetch(url, options);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+      return data;
+    }
+
+    async function loadHealth() {
+      try {
+        const health = await apiJson('/api/health');
+        els.status.textContent = health.hasApiKey ? `Claude 接続: ${health.model}` : 'デモモード: ANTHROPIC_API_KEY 未設定';
+      } catch (error) {
+        els.status.textContent = 'サーバー接続エラー';
+      }
+    }
+
+    async function loadPlaybooks() {
+      const { playbooks } = await apiJson('/api/playbooks');
+      els.playbook.innerHTML = playbooks.map((playbook) => `<option value="${escapeHtml(playbook.id)}">${escapeHtml(playbook.name)}</option>`).join('');
+    }
+
+    function renderReview(review) {
+      currentReview = review;
+      els.docxBtn.disabled = false;
+      els.xlsxBtn.disabled = false;
+
+      const findings = Array.isArray(review.findings) ? review.findings : [];
+      els.results.className = '';
+      els.results.innerHTML = `
+        <div class="summary">${escapeHtml(review.summary || 'サマリーなし')}</div>
+        ${findings.map((finding) => `
+          <article class="finding">
+            <span class="badge ${escapeHtml(finding.severity || 'Note')}">${escapeHtml(finding.id || '')} · ${escapeHtml(finding.severity || 'Note')}</span>
+            <h3>${escapeHtml(finding.title || 'Untitled issue')}</h3>
+            <dl>
+              <div><dt>Clause / location</dt><dd>${escapeHtml(finding.clause || '—')}</dd></div>
+              <div><dt>Risk</dt><dd>${escapeHtml(finding.risk || '—')}</dd></div>
+              <div><dt>Recommendation</dt><dd>${escapeHtml(finding.recommendation || '—')}</dd></div>
+              ${finding.proposedText ? `<div><dt>Proposed text</dt><dd class="proposed">${escapeHtml(finding.proposedText)}</dd></div>` : ''}
+            </dl>
+          </article>
+        `).join('')}
+      `;
+    }
+
+    async function submitReview() {
+      setLoading(true);
+      els.message.textContent = 'レビュー中です…';
+      try {
+        const form = new FormData();
+        if (els.document.files[0]) form.append('document', els.document.files[0]);
+        form.append('text', els.text.value);
+        form.append('playbookId', els.playbook.value);
+        form.append('instructions', els.instructions.value);
+
+        const review = await apiJson('/api/review', { method: 'POST', body: form });
+        renderReview(review);
+        els.message.textContent = `完了: ${review.findings?.length || 0} 件の論点を検出しました。`;
+      } catch (error) {
+        els.message.textContent = `エラー: ${error.message}`;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function downloadExport(kind) {
+      if (!currentReview) return;
+      const response = await fetch(`/api/export/${kind}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ review: currentReview }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || `Export failed: ${response.status}`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = kind === 'docx' ? 'legal-review-report.docx' : 'legal-review-findings.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    els.reviewBtn.addEventListener('click', submitReview);
+    els.clearBtn.addEventListener('click', () => {
+      els.document.value = '';
+      els.text.value = '';
+      els.instructions.value = '';
+      currentReview = null;
+      els.docxBtn.disabled = true;
+      els.xlsxBtn.disabled = true;
+      els.results.className = 'empty';
+      els.results.textContent = 'レビューを実行すると、サマリーと論点がここに表示されます。';
+      els.message.textContent = '';
+    });
+    els.docxBtn.addEventListener('click', () => downloadExport('docx').catch((error) => { els.message.textContent = `Word 出力エラー: ${error.message}`; }));
+    els.xlsxBtn.addEventListener('click', () => downloadExport('xlsx').catch((error) => { els.message.textContent = `Excel 出力エラー: ${error.message}`; }));
+
+    loadHealth();
+    loadPlaybooks().catch((error) => { els.message.textContent = `プレイブック読込エラー: ${error.message}`; });
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "legal-review-assistant",
+  "version": "1.0.0",
+  "description": "Legal document review assistant with Claude integration and Word/Excel exports.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["legal", "claude", "docx", "contract-review"],
+  "license": "MIT"
+}

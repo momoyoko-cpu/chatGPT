@@ -66,7 +66,7 @@
 
 | 領域 | 採用 |
 | --- | --- |
-| Framework | Flutter 3.47 / Dart 3.13 |
+| Framework | Flutter 3.47 / Dart 3.13（iOS / Android / Web） |
 | State Management | Riverpod 3（`Notifier` / `Provider`） |
 | Routing | GoRouter 18（`StatefulShellRoute.indexedStack`） |
 | Backend | Supabase（Phase 3 以降） |
@@ -104,14 +104,27 @@ lib/
 - 操作ボタンの最小タップ領域 44px（`AppSpacing.minTapTarget`）
 - レンジ表は色だけに依存せず、アクション記号と凡例を併用
 
+## Web プレビュー
+
+実機やシミュレータを用意しなくても動作を確認できるように、
+Flutter Web ビルドを GitHub Pages へ自動公開している
+（`.github/workflows/pages.yml`）。公開リポジトリと同様、URL を知っていれば誰でも閲覧できる。
+
+<https://momoyoko-cpu.github.io/chatGPT/>
+
+スマートフォン向けのレイアウトなので、PC のブラウザではデベロッパーツールの
+デバイスモード（iPhone 等）で見ると実機に近い表示になる。
+
 ## 開発
 
 ```bash
 flutter pub get
-flutter run
+flutter run                 # iOS / Android
+flutter run -d chrome       # ブラウザ
 
-flutter analyze   # 警告ゼロを維持する
-flutter test      # 65 テスト
+dart format lib test        # CI で差分チェックあり
+flutter analyze             # 警告ゼロを維持する
+flutter test                # 67 テスト
 ```
 
 ### テスト
@@ -125,6 +138,9 @@ flutter test      # 65 テスト
 | `test/features/profile/learning_stats_test.dart` | 連続学習日数と苦手分野の算出 |
 | `test/features/hand_review/hand_review_test.dart` | 入出力 JSON・ボード質感・解析ロジック |
 | `test/app/app_smoke_test.dart` | 5 画面の表示とタブ遷移 |
+
+`flutter analyze` / `flutter test` / `dart format` は push と PR で CI が自動実行する
+（`.github/workflows/ci.yml`）。
 
 ## バックエンド接続時の注意
 

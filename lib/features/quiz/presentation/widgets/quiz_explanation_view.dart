@@ -27,11 +27,11 @@ class QuizExplanationView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppCard(
-          color: (isCorrect ? AppColors.success : AppColors.danger)
-              .withValues(alpha: 0.1),
-          borderColor:
-              (isCorrect ? AppColors.success : AppColors.danger)
-                  .withValues(alpha: 0.4),
+          color: (isCorrect ? AppColors.success : AppColors.danger).withValues(
+            alpha: 0.1,
+          ),
+          borderColor: (isCorrect ? AppColors.success : AppColors.danger)
+              .withValues(alpha: 0.4),
           child: Row(
             children: [
               Icon(
@@ -48,9 +48,7 @@ class QuizExplanationView extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
-                        color: isCorrect
-                            ? AppColors.success
-                            : AppColors.danger,
+                        color: isCorrect ? AppColors.success : AppColors.danger,
                       ),
                     ),
                     const SizedBox(height: 2),

@@ -76,9 +76,9 @@ class PlayingCard {
 
   /// 52 枚のフルデッキ。カードピッカーで使う。
   static List<PlayingCard> get fullDeck => [
-        for (final suit in CardSuit.values)
-          for (final rank in CardRank.values) PlayingCard(rank, suit),
-      ];
+    for (final suit in CardSuit.values)
+      for (final rank in CardRank.values) PlayingCard(rank, suit),
+  ];
 
   @override
   bool operator ==(Object other) =>

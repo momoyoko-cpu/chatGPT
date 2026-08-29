@@ -142,29 +142,29 @@ class HandReviewInput {
 
   /// Edge Function `POST /review` へ送る JSON。仕様書 5-2 の形式。
   Map<String, dynamic> toJson() => {
-        'game_type': gameType.id,
-        'table_type': tableType.id,
-        'small_blind': smallBlind,
-        'big_blind': bigBlind,
-        'effective_stack_bb': effectiveStackBb,
-        'hero_position': heroPosition.label,
-        'hero_hand': PlayingCard.encodeAll(heroHand),
-        'villain_position': villainPosition.label,
-        'villain_profile': villainProfile.id,
-        'environment': environment.id,
-        'preflop': [for (final action in preflop) action.toJson()],
-        'flop': {
-          'board': PlayingCard.encodeAll(flop.cards),
-          'actions': [for (final action in flop.actions) action.toJson()],
-        },
-        'turn': {
-          'card': turn.cards.isEmpty ? null : turn.cards.first.code,
-          'actions': [for (final action in turn.actions) action.toJson()],
-        },
-        'river': {
-          'card': river.cards.isEmpty ? null : river.cards.first.code,
-          'actions': [for (final action in river.actions) action.toJson()],
-        },
-        'user_question': userQuestion,
-      };
+    'game_type': gameType.id,
+    'table_type': tableType.id,
+    'small_blind': smallBlind,
+    'big_blind': bigBlind,
+    'effective_stack_bb': effectiveStackBb,
+    'hero_position': heroPosition.label,
+    'hero_hand': PlayingCard.encodeAll(heroHand),
+    'villain_position': villainPosition.label,
+    'villain_profile': villainProfile.id,
+    'environment': environment.id,
+    'preflop': [for (final action in preflop) action.toJson()],
+    'flop': {
+      'board': PlayingCard.encodeAll(flop.cards),
+      'actions': [for (final action in flop.actions) action.toJson()],
+    },
+    'turn': {
+      'card': turn.cards.isEmpty ? null : turn.cards.first.code,
+      'actions': [for (final action in turn.actions) action.toJson()],
+    },
+    'river': {
+      'card': river.cards.isEmpty ? null : river.cards.first.code,
+      'actions': [for (final action in river.actions) action.toJson()],
+    },
+    'user_question': userQuestion,
+  };
 }

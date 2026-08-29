@@ -50,8 +50,9 @@ class DailyQuizSession {
       quizzes: quizzes,
       attempts: attempts ?? this.attempts,
       currentIndex: currentIndex ?? this.currentIndex,
-      revealedChoiceId:
-          clearRevealedChoice ? null : revealedChoiceId ?? this.revealedChoiceId,
+      revealedChoiceId: clearRevealedChoice
+          ? null
+          : revealedChoiceId ?? this.revealedChoiceId,
     );
   }
 }

@@ -19,10 +19,9 @@ class DailyQuizController extends Notifier<DailyQuizSession> {
   DailyQuizSession build() {
     final today = DateTime.now().dateOnly;
     final weakCategories = ref.read(learningStatsProvider).weakCategories();
-    final quizzes = ref.read(quizRepositoryProvider).dailyQuizzes(
-          today,
-          weakCategories: weakCategories,
-        );
+    final quizzes = ref
+        .read(quizRepositoryProvider)
+        .dailyQuizzes(today, weakCategories: weakCategories);
     return DailyQuizSession(date: today, quizzes: quizzes);
   }
 
@@ -63,11 +62,13 @@ class DailyQuizController extends Notifier<DailyQuizSession> {
 
 final dailyQuizSessionProvider =
     NotifierProvider<DailyQuizController, DailyQuizSession>(
-  DailyQuizController.new,
-);
+      DailyQuizController.new,
+    );
 
 /// カテゴリを指定した復習問題（クイズ解説・レビュー結果からの導線）。
-final quizzesByCategoryProvider =
-    Provider.family<List<Quiz>, QuizCategory>((ref, category) {
+final quizzesByCategoryProvider = Provider.family<List<Quiz>, QuizCategory>((
+  ref,
+  category,
+) {
   return ref.watch(quizRepositoryProvider).byCategory(category);
 });

@@ -28,8 +28,11 @@ class DailyQuizCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.today_rounded,
-                  size: 18, color: AppColors.accent),
+              const Icon(
+                Icons.today_rounded,
+                size: 18,
+                color: AppColors.accent,
+              ),
               const SizedBox(width: AppSpacing.sm),
               const Text(
                 '今日の10問',
@@ -62,13 +65,11 @@ class DailyQuizCard extends StatelessWidget {
                 isFinished
                     ? Icons.replay_rounded
                     : (isStarted
-                        ? Icons.play_arrow_rounded
-                        : Icons.play_circle_fill_rounded),
+                          ? Icons.play_arrow_rounded
+                          : Icons.play_circle_fill_rounded),
               ),
               label: Text(
-                isFinished
-                    ? 'もう一度解く'
-                    : (isStarted ? '続きから解く' : '今日の10問を始める'),
+                isFinished ? 'もう一度解く' : (isStarted ? '続きから解く' : '今日の10問を始める'),
               ),
             ),
           ),

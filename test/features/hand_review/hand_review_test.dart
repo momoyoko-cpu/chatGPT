@@ -86,22 +86,25 @@ void main() {
 
   group('BoardTexture', () {
     test('レインボーで離れたボードはドライ', () {
-      final texture =
-          BoardTexture.of(PlayingCard.parseAll(const ['Qs', '7d', '2c']))!;
+      final texture = BoardTexture.of(
+        PlayingCard.parseAll(const ['Qs', '7d', '2c']),
+      )!;
       expect(texture.wetness, BoardWetness.dry);
       expect(texture.isHighCardBoard, isTrue);
     });
 
     test('ツートーンで繋がったボードはウェット', () {
-      final texture =
-          BoardTexture.of(PlayingCard.parseAll(const ['9h', '8h', '5c']))!;
+      final texture = BoardTexture.of(
+        PlayingCard.parseAll(const ['9h', '8h', '5c']),
+      )!;
       expect(texture.wetness, BoardWetness.wet);
       expect(texture.hasStraightDraw, isTrue);
     });
 
     test('モノトーンはウェット', () {
-      final texture =
-          BoardTexture.of(PlayingCard.parseAll(const ['Ks', '9s', '4s']))!;
+      final texture = BoardTexture.of(
+        PlayingCard.parseAll(const ['Ks', '9s', '4s']),
+      )!;
       expect(texture.isMonotone, isTrue);
       expect(texture.wetness, BoardWetness.wet);
     });
@@ -117,7 +120,10 @@ void main() {
         HandReviewInput(
           heroPosition: Position.utg,
           heroHand: PlayingCard.parseAll(const ['7h', '2d']),
-          preflop: [_hero(PokerActionType.raise), _villain(PokerActionType.fold)],
+          preflop: [
+            _hero(PokerActionType.raise),
+            _villain(PokerActionType.fold),
+          ],
         ),
       );
 
@@ -131,7 +137,10 @@ void main() {
         HandReviewInput(
           heroPosition: Position.btn,
           heroHand: PlayingCard.parseAll(const ['Ah', 'Kh']),
-          preflop: [_hero(PokerActionType.raise), _villain(PokerActionType.fold)],
+          preflop: [
+            _hero(PokerActionType.raise),
+            _villain(PokerActionType.fold),
+          ],
         ),
       );
 
@@ -156,10 +165,16 @@ void main() {
         HandReviewInput(
           heroPosition: Position.btn,
           heroHand: PlayingCard.parseAll(const ['Ah', 'Kd']),
-          preflop: [_hero(PokerActionType.raise), _villain(PokerActionType.call)],
+          preflop: [
+            _hero(PokerActionType.raise),
+            _villain(PokerActionType.call),
+          ],
           flop: StreetInput(
             cards: PlayingCard.parseAll(const ['Qs', '7d', '2c']),
-            actions: [_villain(PokerActionType.check), _hero(PokerActionType.bet75)],
+            actions: [
+              _villain(PokerActionType.check),
+              _hero(PokerActionType.bet75),
+            ],
           ),
         ),
       );
@@ -170,15 +185,40 @@ void main() {
 
     test('相手の傾向ごとに実戦調整が変わる', () {
       HandReviewInput base(VillainProfile profile) => HandReviewInput(
-            heroPosition: Position.btn,
-            heroHand: PlayingCard.parseAll(const ['Ah', 'Kh']),
-            villainProfile: profile,
-            preflop: [_hero(PokerActionType.raise)],
-          );
+        heroPosition: Position.btn,
+        heroHand: PlayingCard.parseAll(const ['Ah', 'Kh']),
+        villainProfile: profile,
+        preflop: [_hero(PokerActionType.raise)],
+      );
 
       final tight = repository.analyze(base(VillainProfile.tight));
       final loose = repository.analyze(base(VillainProfile.loose));
       expect(tight.practicalAdjustment, isNot(loose.practicalAdjustment));
+    });
+
+    test('指摘が無いときのサマリーは「直す」話にならない', () {
+      final result = repository.analyze(
+        HandReviewInput(
+          heroPosition: Position.btn,
+          heroHand: PlayingCard.parseAll(const ['As', 'Ks']),
+          preflop: [_hero(PokerActionType.raise)],
+        ),
+      );
+
+      expect(result.mainImprovement, contains('見当たりません'));
+      expect(result.summary, isNot(contains('ここを直すと')));
+    });
+
+    test('ストリート別分析でヒーローは「あなた」と表示される', () {
+      final result = repository.analyze(
+        HandReviewInput(
+          heroHand: PlayingCard.parseAll(const ['As', 'Ks']),
+          preflop: [_hero(PokerActionType.raise)],
+        ),
+      );
+
+      expect(result.streetAnalysis['preflop'], contains('あなた'));
+      expect(result.streetAnalysis['preflop'], isNot(contains('hero')));
     });
 
     test('出力はスコア範囲と必須項目を満たす', () {
@@ -193,8 +233,10 @@ void main() {
       expect(result.summary, isNotEmpty);
       expect(result.goodPoints, isNotEmpty);
       expect(result.mainImprovement, isNotEmpty);
-      expect(result.streetAnalysis.keys,
-          containsAll(['preflop', 'flop', 'turn', 'river']));
+      expect(
+        result.streetAnalysis.keys,
+        containsAll(['preflop', 'flop', 'turn', 'river']),
+      );
       expect(result.gtoView, isNotEmpty);
       expect(result.practicalAdjustment, isNotEmpty);
       expect(result.nextFocus, isNotEmpty);

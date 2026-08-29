@@ -101,8 +101,11 @@ class RangePage extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.md),
                     Row(
                       children: [
-                        const Icon(Icons.info_outline_rounded,
-                            size: 14, color: AppColors.textMuted),
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          size: 14,
+                          color: AppColors.textMuted,
+                        ),
                         const SizedBox(width: AppSpacing.xs),
                         Expanded(
                           child: Text(
@@ -152,13 +155,13 @@ class RangePage extends ConsumerWidget {
 
   List<RangeAction> _legendActions(RangeSituation situation) =>
       situation == RangeSituation.openRaise
-          ? const [RangeAction.raise, RangeAction.mixed, RangeAction.fold]
-          : const [
-              RangeAction.threeBet,
-              RangeAction.call,
-              RangeAction.mixed,
-              RangeAction.fold,
-            ];
+      ? const [RangeAction.raise, RangeAction.mixed, RangeAction.fold]
+      : const [
+          RangeAction.threeBet,
+          RangeAction.call,
+          RangeAction.mixed,
+          RangeAction.fold,
+        ];
 
   void _selectTableType(WidgetRef ref, TableType value) {
     ref.read(selectedTableTypeProvider.notifier).select(value);

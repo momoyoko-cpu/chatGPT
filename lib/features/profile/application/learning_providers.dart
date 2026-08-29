@@ -20,8 +20,9 @@ class LearningStore extends Notifier<LearningRecord> {
   void recordAttempt(QuizAttempt attempt) {
     final attempts = [
       ...state.attempts.where(
-        (existing) => !(existing.quizId == attempt.quizId &&
-            existing.answeredAt.isSameDay(attempt.answeredAt)),
+        (existing) =>
+            !(existing.quizId == attempt.quizId &&
+                existing.answeredAt.isSameDay(attempt.answeredAt)),
       ),
       attempt,
     ];
@@ -40,8 +41,9 @@ class LearningStore extends Notifier<LearningRecord> {
   }
 }
 
-final learningStoreProvider =
-    NotifierProvider<LearningStore, LearningRecord>(LearningStore.new);
+final learningStoreProvider = NotifierProvider<LearningStore, LearningRecord>(
+  LearningStore.new,
+);
 
 /// 学習履歴から算出した集計値。
 final learningStatsProvider = Provider<LearningStats>((ref) {
@@ -54,10 +56,12 @@ final learningStatsProvider = Provider<LearningStats>((ref) {
     attempts: record.attempts,
     reviewCount: record.reviews.length,
     streakDays: calculateStreak(record.activeDays),
-    activeDaysLast7:
-        record.activeDays.where((day) => day.isAfter(last7)).length,
-    activeDaysLast30:
-        record.activeDays.where((day) => day.isAfter(last30)).length,
+    activeDaysLast7: record.activeDays
+        .where((day) => day.isAfter(last7))
+        .length,
+    activeDaysLast30: record.activeDays
+        .where((day) => day.isAfter(last30))
+        .length,
   );
 });
 

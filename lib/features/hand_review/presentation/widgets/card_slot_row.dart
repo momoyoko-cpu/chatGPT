@@ -39,8 +39,11 @@ class CardSlotRow extends StatelessWidget {
                 ),
               ),
             const Spacer(),
-            const Icon(Icons.touch_app_rounded,
-                size: 18, color: AppColors.textMuted),
+            const Icon(
+              Icons.touch_app_rounded,
+              size: 18,
+              color: AppColors.textMuted,
+            ),
             const SizedBox(width: AppSpacing.xs),
             const Text(
               'タップして選択',

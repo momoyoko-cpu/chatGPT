@@ -17,8 +17,8 @@ enum HandShape {
 /// レンジ表の 1 マスに対応する。
 class StartingHand {
   StartingHand(CardRank first, CardRank second, this.shape)
-      : high = first.strength >= second.strength ? first : second,
-        low = first.strength >= second.strength ? second : first {
+    : high = first.strength >= second.strength ? first : second,
+      low = first.strength >= second.strength ? second : first {
     if (high == low && shape != HandShape.pair) {
       throw ArgumentError('同じランクの組み合わせはペアである必要があります');
     }
@@ -54,8 +54,9 @@ class StartingHand {
     if (code.length != 3) {
       throw FormatException('スーテッド/オフスートの指定が必要です: $code');
     }
-    final shape =
-        code[2].toLowerCase() == 's' ? HandShape.suited : HandShape.offsuit;
+    final shape = code[2].toLowerCase() == 's'
+        ? HandShape.suited
+        : HandShape.offsuit;
     return StartingHand(first, second, shape);
   }
 
@@ -90,10 +91,10 @@ class StartingHand {
 
   /// 169 種類すべて。
   static List<StartingHand> get all => [
-        for (var row = 0; row < CardRank.values.length; row++)
-          for (var column = 0; column < CardRank.values.length; column++)
-            StartingHand.fromGrid(row, column),
-      ];
+    for (var row = 0; row < CardRank.values.length; row++)
+      for (var column = 0; column < CardRank.values.length; column++)
+        StartingHand.fromGrid(row, column),
+  ];
 
   @override
   bool operator ==(Object other) =>

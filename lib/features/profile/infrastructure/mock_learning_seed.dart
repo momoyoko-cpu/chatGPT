@@ -46,8 +46,8 @@ abstract final class MockLearningSeed {
             selectedChoiceId: isCorrect
                 ? quiz.correctChoiceId
                 : quiz.choices
-                    .firstWhere((choice) => choice.id != quiz.correctChoiceId)
-                    .id,
+                      .firstWhere((choice) => choice.id != quiz.correctChoiceId)
+                      .id,
             isCorrect: isCorrect,
             answeredAt: day.add(Duration(hours: 20, minutes: i * 2)),
           ),

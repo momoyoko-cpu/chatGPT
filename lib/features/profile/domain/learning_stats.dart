@@ -37,8 +37,7 @@ class LearningStats {
   final int activeDaysLast30;
 
   int get totalAnswered => attempts.length;
-  int get totalCorrect =>
-      attempts.where((attempt) => attempt.isCorrect).length;
+  int get totalCorrect => attempts.where((attempt) => attempt.isCorrect).length;
   double get accuracy => totalAnswered == 0 ? 0 : totalCorrect / totalAnswered;
 
   /// カテゴリ別集計。回答のあるカテゴリのみ返す。
@@ -51,10 +50,12 @@ class LearningStats {
       for (final entry in byCategory.entries)
         CategoryStat(
           category: entry.key,
-          correctCount:
-              entry.value.where((attempt) => attempt.isCorrect).length,
-          incorrectCount:
-              entry.value.where((attempt) => !attempt.isCorrect).length,
+          correctCount: entry.value
+              .where((attempt) => attempt.isCorrect)
+              .length,
+          incorrectCount: entry.value
+              .where((attempt) => !attempt.isCorrect)
+              .length,
         ),
     ];
     stats.sort((a, b) => a.accuracy.compareTo(b.accuracy));
@@ -63,15 +64,15 @@ class LearningStats {
 
   /// 苦手分野。正答率が低く、かつ十分な回答数があるカテゴリ。
   List<QuizCategory> weakCategories({int limit = 3}) => [
-        for (final stat in categoryStats)
-          if (stat.hasEnoughSamples && stat.accuracy < 0.7) stat.category,
-      ].take(limit).toList();
+    for (final stat in categoryStats)
+      if (stat.hasEnoughSamples && stat.accuracy < 0.7) stat.category,
+  ].take(limit).toList();
 
   /// 得意分野。
   List<QuizCategory> strongCategories({int limit = 3}) => [
-        for (final stat in categoryStats.reversed)
-          if (stat.hasEnoughSamples && stat.accuracy >= 0.8) stat.category,
-      ].take(limit).toList();
+    for (final stat in categoryStats.reversed)
+      if (stat.hasEnoughSamples && stat.accuracy >= 0.8) stat.category,
+  ].take(limit).toList();
 
   /// 直近 7 日の正答率。成長ポイントの算出に使う。
   double get accuracyLast7Days => _accuracySince(const Duration(days: 7));
@@ -91,8 +92,9 @@ class LearningStats {
 
   double _accuracySince(Duration duration) {
     final from = DateTime.now().subtract(duration);
-    final window =
-        attempts.where((attempt) => attempt.answeredAt.isAfter(from));
+    final window = attempts.where(
+      (attempt) => attempt.answeredAt.isAfter(from),
+    );
     if (window.isEmpty) return 0;
     return window.where((attempt) => attempt.isCorrect).length / window.length;
   }

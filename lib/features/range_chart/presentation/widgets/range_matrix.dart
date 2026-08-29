@@ -11,11 +11,7 @@ import '../../domain/range_entry.dart';
 /// マス目は画面幅に合わせて縮むため、[InteractiveViewer] で拡大できるようにしている。
 /// タップ領域 44px の要件は、周囲の操作ボタン側で担保する。
 class RangeMatrix extends StatelessWidget {
-  const RangeMatrix({
-    super.key,
-    required this.chart,
-    required this.onHandTap,
-  });
+  const RangeMatrix({super.key, required this.chart, required this.onHandTap});
 
   final RangeChart chart;
   final ValueChanged<StartingHand> onHandTap;
@@ -39,8 +35,9 @@ class RangeMatrix extends StatelessWidget {
                       for (var column = 0; column < ranks.length; column++)
                         _MatrixCell(
                           size: cellSize,
-                          entry: chart
-                              .entryFor(StartingHand.fromGrid(row, column)),
+                          entry: chart.entryFor(
+                            StartingHand.fromGrid(row, column),
+                          ),
                           onTap: onHandTap,
                         ),
                     ],

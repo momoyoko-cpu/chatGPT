@@ -173,10 +173,7 @@ class _ResultBody extends StatelessWidget {
         ),
         if (result.relatedQuizTopics.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.sm),
-          const SectionHeader(
-            title: '関連クイズ',
-            subtitle: 'このハンドから見つかったテーマ',
-          ),
+          const SectionHeader(title: '関連クイズ', subtitle: 'このハンドから見つかったテーマ'),
           const SizedBox(height: AppSpacing.md),
           AppCard(
             child: Column(
@@ -207,7 +204,11 @@ class _ResultBody extends StatelessWidget {
         const Text(
           'この結果はアプリ内のローカル解析によるものです。'
           'Supabase Edge Function 接続後は、同じ表示のままAIの出力に切り替わります。',
-          style: TextStyle(fontSize: 11, height: 1.6, color: AppColors.textMuted),
+          style: TextStyle(
+            fontSize: 11,
+            height: 1.6,
+            color: AppColors.textMuted,
+          ),
         ),
       ],
     );

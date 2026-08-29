@@ -41,11 +41,10 @@ enum Position {
     Position.bb,
   ];
 
-  static List<Position> orderFor(TableType tableType) =>
-      switch (tableType) {
-        TableType.sixMax => sixMaxOrder,
-        TableType.nineMax => nineMaxOrder,
-      };
+  static List<Position> orderFor(TableType tableType) => switch (tableType) {
+    TableType.sixMax => sixMaxOrder,
+    TableType.nineMax => nineMaxOrder,
+  };
 
   static Position fromLabel(String label) =>
       Position.values.firstWhere((position) => position.label == label);

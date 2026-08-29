@@ -16,9 +16,9 @@ class MockRangeRepository implements RangeRepository {
 
   @override
   List<RangeSpot> spotsFor(TableType tableType) => [
-        for (final definition in RangeDefinitions.all)
-          if (definition.spot.tableType == tableType) definition.spot,
-      ];
+    for (final definition in RangeDefinitions.all)
+      if (definition.spot.tableType == tableType) definition.spot,
+  ];
 
   @override
   RangeChart? chartFor(TableType tableType, Position position) {

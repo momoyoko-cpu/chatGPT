@@ -8,25 +8,16 @@ void main() {
     });
 
     test('ペアの + はそれ以上すべてを含む', () {
-      expect(
-        RangeNotation.expand('TT+'),
-        {'AA', 'KK', 'QQ', 'JJ', 'TT'},
-      );
+      expect(RangeNotation.expand('TT+'), {'AA', 'KK', 'QQ', 'JJ', 'TT'});
     });
 
     test('キッカーの + はハイカードを固定して広げる', () {
-      expect(
-        RangeNotation.expand('AJs+'),
-        {'AKs', 'AQs', 'AJs'},
-      );
+      expect(RangeNotation.expand('AJs+'), {'AKs', 'AQs', 'AJs'});
       expect(RangeNotation.expand('KTo+'), {'KQo', 'KJo', 'KTo'});
     });
 
     test('同じギャップの帯を展開する', () {
-      expect(
-        RangeNotation.expand('T9s-76s'),
-        {'T9s', '98s', '87s', '76s'},
-      );
+      expect(RangeNotation.expand('T9s-76s'), {'T9s', '98s', '87s', '76s'});
     });
 
     test('ハイカード固定の帯を展開する', () {
@@ -38,10 +29,13 @@ void main() {
     });
 
     test('カンマ区切りをまとめて展開する', () {
-      expect(
-        RangeNotation.expand('QQ+, AKs, 76s'),
-        {'AA', 'KK', 'QQ', 'AKs', '76s'},
-      );
+      expect(RangeNotation.expand('QQ+, AKs, 76s'), {
+        'AA',
+        'KK',
+        'QQ',
+        'AKs',
+        '76s',
+      });
     });
 
     test('空文字は空集合になる', () {

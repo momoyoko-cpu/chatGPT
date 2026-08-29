@@ -28,10 +28,7 @@ class RangeDefinition {
 abstract final class RangeDefinitions {
   static const double _defaultStackBb = 100;
 
-  static List<RangeDefinition> get all => [
-        ..._sixMax,
-        ..._nineMax,
-      ];
+  static List<RangeDefinition> get all => [..._sixMax, ..._nineMax];
 
   static RangeDefinition? find(TableType tableType, Position position) {
     for (final definition in all) {
@@ -78,8 +75,7 @@ abstract final class RangeDefinitions {
         headline: 'BB は自分からオープンできないポジション。BTN の 2.5BB オープンに対する守り方を確認しましょう。',
       ),
       notationByAction: {
-        RangeAction.threeBet:
-            '99+, AJs+, KQs, A5s-A4s, AQo+',
+        RangeAction.threeBet: '99+, AJs+, KQs, A5s-A4s, AQo+',
         RangeAction.call:
             '22-88, A2s+, K2s+, Q5s+, J7s+, T7s+, 96s+, 85s+, 75s+, 64s+, 53s+, '
             'A2o+, K8o+, Q9o+, J9o+, T9o, 98o',
@@ -102,15 +98,15 @@ abstract final class RangeDefinitions {
       tableType: TableType.sixMax,
       position: Position.hj,
       headline: 'UTG より少しだけ広げられます。まだ後ろに 4 人います。',
-      raise: '44+, A7s+, A5s-A4s, K9s+, Q9s+, J9s+, T8s+, 97s+, 87s, ATo+, KJo+',
+      raise:
+          '44+, A7s+, A5s-A4s, K9s+, Q9s+, J9s+, T8s+, 97s+, 87s, ATo+, KJo+',
       mixed: '33, A6s, K8s, Q8s, 76s, KTo, QJo',
     ),
     _openRaise(
       tableType: TableType.sixMax,
       position: Position.co,
       headline: '後ろは BTN とブラインドだけ。ここからレンジを大きく広げます。',
-      raise:
-          '22+, A2s+, K7s+, Q8s+, J8s+, T8s+, 97s+, 86s+, 76s, 65s, A9o+, KTo+, QTo+, JTo',
+      raise: '22+, A2s+, K7s+, Q8s+, J8s+, T8s+, 97s+, 86s+, 76s, 65s, A9o+, KTo+, QTo+, JTo',
       mixed: 'K6s, Q7s, J7s, T7s, 54s, A8o, K9o, Q9o',
     ),
     _openRaise(
@@ -169,15 +165,15 @@ abstract final class RangeDefinitions {
       tableType: TableType.nineMax,
       position: Position.hj,
       headline: '後ろは 4 人。コネクター類も参加できるようになります。',
-      raise: '33+, A5s+, K8s+, Q9s+, J9s+, T8s+, 97s+, 87s, 76s, ATo+, KJo+, QJo',
+      raise:
+          '33+, A5s+, K8s+, Q9s+, J9s+, T8s+, 97s+, 87s, 76s, ATo+, KJo+, QJo',
       mixed: '22, A4s, A3s, K7s, Q8s, J8s, 65s, A9o, KTo, QTo',
     ),
     _openRaise(
       tableType: TableType.nineMax,
       position: Position.co,
       headline: '後ろは BTN とブラインドだけ。ここから一気に広げます。',
-      raise:
-          '22+, A2s+, K7s+, Q8s+, J8s+, T8s+, 97s+, 86s+, 76s, 65s, A9o+, KTo+, QTo+, JTo',
+      raise: '22+, A2s+, K7s+, Q8s+, J8s+, T8s+, 97s+, 86s+, 76s, 65s, A9o+, KTo+, QTo+, JTo',
       mixed: 'K6s, Q7s, J7s, T7s, 54s, A8o, K9o, Q9o',
     ),
     _openRaise(

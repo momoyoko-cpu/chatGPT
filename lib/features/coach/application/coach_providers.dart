@@ -13,7 +13,9 @@ final coachRepositoryProvider = Provider<CoachRepository>(
 /// ホームに表示する今日のコーチコメント。
 final coachBriefingProvider = Provider<CoachBriefing>((ref) {
   final session = ref.watch(dailyQuizSessionProvider);
-  return ref.watch(coachRepositoryProvider).briefing(
+  return ref
+      .watch(coachRepositoryProvider)
+      .briefing(
         displayName: ref.watch(userProfileProvider).displayName,
         stats: ref.watch(learningStatsProvider),
         todayAnswered: session.answeredCount,

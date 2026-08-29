@@ -217,8 +217,7 @@ class HandReviewPage extends ConsumerWidget {
                 title: 'フロップの3枚を選択',
                 maxCount: 3,
                 current: input.flop.cards,
-                onSelected: (cards) =>
-                    form.setStreetCards(Street.flop, cards),
+                onSelected: (cards) => form.setStreetCards(Street.flop, cards),
               ),
               onAdd: (action) => form.addAction(Street.flop, action),
               onRemoveLast: () => form.removeLastAction(Street.flop),

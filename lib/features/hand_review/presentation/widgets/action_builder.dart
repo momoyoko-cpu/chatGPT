@@ -108,20 +108,23 @@ class _ActionButton extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        // alignment を使うと横幅いっぱいに広がるため Center(widthFactor: 1) を使う。
         child: Container(
           constraints: const BoxConstraints(
             minHeight: AppSpacing.minTapTarget,
             minWidth: 68,
           ),
-          alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             border: Border.all(color: AppColors.border),
           ),
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+          child: Center(
+            widthFactor: 1,
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+            ),
           ),
         ),
       ),

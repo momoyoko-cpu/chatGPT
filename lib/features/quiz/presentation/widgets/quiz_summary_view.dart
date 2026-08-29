@@ -43,8 +43,11 @@ class QuizSummaryView extends StatelessWidget {
         AppCard(
           child: Column(
             children: [
-              const Icon(Icons.emoji_events_rounded,
-                  size: 40, color: AppColors.warning),
+              const Icon(
+                Icons.emoji_events_rounded,
+                size: 40,
+                color: AppColors.warning,
+              ),
               const SizedBox(height: AppSpacing.md),
               const Text(
                 '今日の10問おつかれさまでした',
@@ -90,7 +93,7 @@ class QuizSummaryView extends StatelessWidget {
                 _missedCategories.isEmpty
                     ? '全問正解です。明日は少し難しめの問題に挑戦しましょう。'
                     : '${_missedCategories.map((category) => category.label).join(' / ')} '
-                        'を重点的に復習しましょう。間違えた問題の「よくあるミス」をもう一度読むのが近道です。',
+                          'を重点的に復習しましょう。間違えた問題の「よくあるミス」をもう一度読むのが近道です。',
                 style: const TextStyle(
                   fontSize: 14,
                   height: 1.7,

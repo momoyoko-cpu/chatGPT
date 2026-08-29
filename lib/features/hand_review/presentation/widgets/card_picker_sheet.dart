@@ -64,10 +64,7 @@ class _CardPickerSheetState extends State<CardPickerSheet> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               '${_selected.length} / ${widget.maxCount} 枚選択中',
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppColors.textMuted,
-              ),
+              style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
             ),
             const SizedBox(height: AppSpacing.md),
             Flexible(
@@ -83,12 +80,16 @@ class _CardPickerSheetState extends State<CardPickerSheet> {
                               Expanded(
                                 child: _PickerCell(
                                   card: PlayingCard(rank, suit),
-                                  isSelected: _selected
-                                      .contains(PlayingCard(rank, suit)),
-                                  isDisabled: widget.disabledCards
-                                          .contains(PlayingCard(rank, suit)) &&
-                                      !_selected
-                                          .contains(PlayingCard(rank, suit)),
+                                  isSelected: _selected.contains(
+                                    PlayingCard(rank, suit),
+                                  ),
+                                  isDisabled:
+                                      widget.disabledCards.contains(
+                                        PlayingCard(rank, suit),
+                                      ) &&
+                                      !_selected.contains(
+                                        PlayingCard(rank, suit),
+                                      ),
                                   onTap: _toggle,
                                 ),
                               ),
@@ -178,8 +179,8 @@ class _PickerCell extends StatelessWidget {
                     color: isSelected
                         ? const Color(0xFF04231A)
                         : (card.suit.isRed
-                            ? AppColors.danger
-                            : AppColors.textSecondary),
+                              ? AppColors.danger
+                              : AppColors.textSecondary),
                   ),
                 ),
               ],

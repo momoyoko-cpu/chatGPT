@@ -46,8 +46,8 @@ class RangeChart {
   }
 
   static double _combinations(StartingHand hand) => switch (hand.shape) {
-        HandShape.pair => 6,
-        HandShape.suited => 4,
-        HandShape.offsuit => 12,
-      };
+    HandShape.pair => 6,
+    HandShape.suited => 4,
+    HandShape.offsuit => 12,
+  };
 }

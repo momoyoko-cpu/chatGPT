@@ -84,32 +84,32 @@ abstract final class RangeGuidanceBuilder {
     final handClass = _handClass(entry.hand);
     final position = spot.heroPosition;
     final positionNote = switch (position) {
-      Position.btn => 'BTN は全ストリートで最後に action できるため、最も広く戦える',
-      Position.sb => 'SB は BB とのヘッズアップになるが、ポストフロップは常に不利なポジション',
-      Position.bb => 'BB はすでにブラインドを払っており、必要なオッズが良い',
-      Position.co => 'CO は後ろに BTN と 2 つのブラインドしか残っていない',
-      _ => '${position.label} は後ろに残っているプレイヤーが多い',
+      Position.btn => 'BTN は全ストリートで最後に動ける最も有利な席です',
+      Position.sb => 'SB は BB とのヘッズアップですが、ポストフロップは常に不利です',
+      Position.bb => 'BB はすでにブラインドを払っているぶん、必要なオッズが良くなります',
+      Position.co => 'CO の後ろは BTN と 2 つのブラインドだけです',
+      _ => '${position.label} は後ろに残っているプレイヤーが多い席です',
     };
 
     return switch (entry.action) {
       RangeAction.raise =>
-        '${entry.hand.code} は $handClass。$positionNote ため、'
-            'このハンドはレイズして主導権を取る価値がある。',
+        '${entry.hand.code}は$handClass。$positionNote。'
+            'レイズして主導権を取る価値のあるハンドです。',
       RangeAction.call =>
-        '${entry.hand.code} は $handClass。レイズするほど強くはないが、'
-            '$positionNote ため、ポットに参加する価値はある。',
+        '${entry.hand.code}は$handClass。レイズするほど強くはありませんが、'
+            '$positionNote。ポットに参加する価値はあります。',
       RangeAction.threeBet =>
-        '${entry.hand.code} は $handClass。相手のオープンに対して'
-            '3Bet でプレッシャーをかけられる強さ / ブロッカーがある。',
+        '${entry.hand.code}は$handClass。相手のオープンに対して'
+            '3Bet でプレッシャーをかけられる強さ、またはブロッカーがあります。',
       RangeAction.fourBet =>
-        '${entry.hand.code} は $handClass。3Bet に対しても降りずに'
-            '4Bet で戦えるレンジの上位に入る。',
+        '${entry.hand.code}は$handClass。3Bet に対しても降りずに'
+            '4Bet で戦えるレンジの上位に入ります。',
       RangeAction.mixed =>
-        '${entry.hand.code} は $handClass。境界線上のハンドで、'
-            'テーブルの傾向によってプレイするかどうかが変わる。',
+        '${entry.hand.code}は$handClass。境界線上のハンドで、'
+            'テーブルの傾向によってプレイするかどうかが変わります。',
       RangeAction.fold =>
-        '${entry.hand.code} は $handClass。${position.label} からは'
-            'レンジ外で、参加しても長期的にはマイナスになりやすい。',
+        '${entry.hand.code}は$handClass。${position.label} からはレンジ外で、'
+            '参加しても長期的にはマイナスになりやすいハンドです。',
     };
   }
 
@@ -121,8 +121,7 @@ abstract final class RangeGuidanceBuilder {
       RangeAction.mixed =>
         'まずは「参加しない」で固定して大丈夫です。慣れてきたら、'
             'テーブルが受け身なときだけ入れてみましょう。',
-      RangeAction.call =>
-        'コールで参加するときは、フロップで何を狙うのかを先に決めておきましょう。',
+      RangeAction.call => 'コールで参加するときは、フロップで何を狙うのかを先に決めておきましょう。',
       _ =>
         'リンプ（コールだけで入る）ではなくレイズで入るのが基本です。'
             'サイズは ${position == Position.sb ? '3BB' : '2.5BB'} 前後をひとつの目安にしてください。',
@@ -154,8 +153,9 @@ abstract final class RangeGuidanceBuilder {
       Position.sb =>
         'BB がディフェンスの緩い相手ならレイズを増やし、'
             '3Bet が多い相手なら弱いハンドから外していきます。',
-      _ => '同じテーブルに攻撃的な相手が後ろにいる場合は、'
-          'レンジの下限から少しずつ外していくのが安全です。',
+      _ =>
+        '同じテーブルに攻撃的な相手が後ろにいる場合は、'
+            'レンジの下限から少しずつ外していくのが安全です。',
     };
   }
 }

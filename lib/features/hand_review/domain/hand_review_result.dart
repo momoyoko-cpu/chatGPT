@@ -53,17 +53,17 @@ class HandReviewResult {
   }
 
   Map<String, dynamic> toJson() => {
-        'score': score,
-        'summary': summary,
-        'good_points': goodPoints,
-        'main_improvement': mainImprovement,
-        'street_analysis': streetAnalysis,
-        'gto_view': gtoView,
-        'practical_adjustment': practicalAdjustment,
-        'alternative_lines': alternativeLines,
-        'next_focus': nextFocus,
-        'related_quiz_topics': relatedQuizTopics,
-      };
+    'score': score,
+    'summary': summary,
+    'good_points': goodPoints,
+    'main_improvement': mainImprovement,
+    'street_analysis': streetAnalysis,
+    'gto_view': gtoView,
+    'practical_adjustment': practicalAdjustment,
+    'alternative_lines': alternativeLines,
+    'next_focus': nextFocus,
+    'related_quiz_topics': relatedQuizTopics,
+  };
 
   static List<String> _stringList(Object? value) => value is List
       ? value.map((item) => item.toString()).toList(growable: false)

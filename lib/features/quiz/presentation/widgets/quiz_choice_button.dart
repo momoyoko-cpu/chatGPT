@@ -61,7 +61,10 @@ class QuizChoiceButton extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm + 2),
-              border: Border.all(color: _borderColor, width: isRevealed ? 1.5 : 1),
+              border: Border.all(
+                color: _borderColor,
+                width: isRevealed ? 1.5 : 1,
+              ),
             ),
             child: Row(
               children: [

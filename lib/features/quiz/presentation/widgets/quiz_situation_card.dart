@@ -38,8 +38,11 @@ class QuizSituationCard extends StatelessWidget {
               ),
               if (situation.villainPosition != null) ...[
                 const SizedBox(width: AppSpacing.sm),
-                const Icon(Icons.swap_horiz_rounded,
-                    size: 18, color: AppColors.textMuted),
+                const Icon(
+                  Icons.swap_horiz_rounded,
+                  size: 18,
+                  color: AppColors.textMuted,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 _PositionBadge(
                   label: '相手',
@@ -71,8 +74,11 @@ class QuizSituationCard extends StatelessWidget {
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(top: 6, right: AppSpacing.sm),
-                      child: Icon(Icons.circle,
-                          size: 5, color: AppColors.textMuted),
+                      child: Icon(
+                        Icons.circle,
+                        size: 5,
+                        color: AppColors.textMuted,
+                      ),
                     ),
                     Expanded(
                       child: Text(

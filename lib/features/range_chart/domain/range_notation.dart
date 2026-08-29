@@ -75,10 +75,12 @@ abstract final class RangeNotation {
     final toGap = to.high.strength - to.low.strength;
     if (fromGap == toGap) {
       // 同じギャップの帯: T9s-76s → T9s, 98s, 87s, 76s
-      final topHigh =
-          from.high.strength >= to.high.strength ? from.high : to.high;
-      final bottomHigh =
-          from.high.strength >= to.high.strength ? to.high : from.high;
+      final topHigh = from.high.strength >= to.high.strength
+          ? from.high
+          : to.high;
+      final bottomHigh = from.high.strength >= to.high.strength
+          ? to.high
+          : from.high;
       return {
         for (final rank in CardRank.descending)
           if (rank.strength <= topHigh.strength &&

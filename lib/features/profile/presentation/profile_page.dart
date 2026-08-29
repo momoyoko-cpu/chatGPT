@@ -160,10 +160,7 @@ class ProfilePage extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.xl),
-            const SectionHeader(
-              title: '得意 / 苦手',
-              subtitle: '各カテゴリ3問以上で判定します',
-            ),
+            const SectionHeader(title: '得意 / 苦手', subtitle: '各カテゴリ3問以上で判定します'),
             const SizedBox(height: AppSpacing.md),
             AppCard(
               child: Column(

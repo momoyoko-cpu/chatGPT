@@ -1,0 +1,60 @@
+name: Deploy web preview
+
+# 実機がなくても動作を確認できるように、Flutter Web ビルドを
+# GitHub Pages へ公開する。公開先は公開リポジトリと同じく誰でも閲覧できる。
+on:
+  push:
+    branches:
+      - main
+      - claude/poker-coaching-app-0p1ya7
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.2
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # CanvasKit を同梱して CDN 依存を減らす。
+      # base-href は Pages の配信パス (/<repo>/) に合わせる。
+      - name: Build web
+        run: |
+          flutter build web --release \
+            --no-web-resources-cdn \
+            --base-href "/${GITHUB_REPOSITORY#*/}/"
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

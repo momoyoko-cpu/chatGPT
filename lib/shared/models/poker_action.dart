@@ -45,11 +45,7 @@ enum PokerActionType {
 
 /// 「誰が何をしたか」を表す 1 アクション。
 class HandAction {
-  const HandAction({
-    required this.actor,
-    required this.action,
-    this.sizeBb,
-  });
+  const HandAction({required this.actor, required this.action, this.sizeBb});
 
   /// `hero` もしくはポジション名（`BB` など）。
   final String actor;
@@ -60,15 +56,19 @@ class HandAction {
 
   bool get isHero => actor == heroActor;
 
+  /// 画面表示用のアクター名。JSON では `hero` のまま送る。
+  String get actorLabel => isHero ? 'あなた' : actor;
+
   static const String heroActor = 'hero';
 
   Map<String, dynamic> toJson() => {
-        'actor': actor,
-        'action': action.label,
-        if (sizeBb != null) 'size_bb': sizeBb,
-      };
+    'actor': actor,
+    'action': action.label,
+    if (sizeBb != null) 'size_bb': sizeBb,
+  };
 
   @override
-  String toString() =>
-      sizeBb == null ? '$actor ${action.label}' : '$actor ${action.label} (${sizeBb}BB)';
+  String toString() => sizeBb == null
+      ? '$actorLabel ${action.label}'
+      : '$actorLabel ${action.label} (${sizeBb}BB)';
 }

@@ -43,10 +43,7 @@ void main() {
     test('同じ日付なら同じ10問になる', () {
       final first = repository.dailyQuizzes(DateTime(2026, 8, 29));
       final second = repository.dailyQuizzes(DateTime(2026, 8, 29));
-      expect(
-        first.map((quiz) => quiz.id),
-        second.map((quiz) => quiz.id),
-      );
+      expect(first.map((quiz) => quiz.id), second.map((quiz) => quiz.id));
       expect(first, hasLength(10));
     });
 
@@ -64,12 +61,13 @@ void main() {
         DateTime(2026, 8, 29),
         weakCategories: const [QuizCategory.river],
       );
-      final riverCount =
-          QuizBank.all.where((quiz) => quiz.category == QuizCategory.river).length;
+      final riverCount = QuizBank.all
+          .where((quiz) => quiz.category == QuizCategory.river)
+          .length;
       expect(
-        quizzes.take(riverCount).every(
-              (quiz) => quiz.category == QuizCategory.river,
-            ),
+        quizzes
+            .take(riverCount)
+            .every((quiz) => quiz.category == QuizCategory.river),
         isTrue,
       );
     });
@@ -100,8 +98,9 @@ void main() {
     test('解説表示中は二重回答できない', () {
       final controller = container.read(dailyQuizSessionProvider.notifier);
       final quiz = container.read(dailyQuizSessionProvider).currentQuiz!;
-      final wrongChoice = quiz.choices
-          .firstWhere((choice) => choice.id != quiz.correctChoiceId);
+      final wrongChoice = quiz.choices.firstWhere(
+        (choice) => choice.id != quiz.correctChoiceId,
+      );
 
       controller.answer(quiz.correctChoiceId);
       controller.answer(wrongChoice.id);
@@ -119,10 +118,7 @@ void main() {
 
       controller.answer(quiz.correctChoiceId);
 
-      expect(
-        container.read(learningStoreProvider).attempts.length,
-        before + 1,
-      );
+      expect(container.read(learningStoreProvider).attempts.length, before + 1);
     });
 
     test('10問すべて答えると終了状態になる', () {

@@ -27,22 +27,27 @@ abstract final class AppTheme {
       fontFamilyFallback: const ['Hiragino Sans', 'Roboto', 'sans-serif'],
     );
 
+    // コンポーネントテーマに素の TextStyle を渡すと ThemeData.fontFamily が
+    // 引き継がれず、日本語が別フォントで描画されてしまう。
+    // 必ず textTheme から派生させること。
+    final textTheme = baseTheme.textTheme.apply(
+      bodyColor: AppColors.textPrimary,
+      displayColor: AppColors.textPrimary,
+    );
+
     return baseTheme.copyWith(
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: AppColors.background,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: TextStyle(
+        titleTextStyle: textTheme.titleLarge?.copyWith(
           color: AppColors.textPrimary,
           fontSize: 20,
           fontWeight: FontWeight.w700,
         ),
       ),
-      textTheme: baseTheme.textTheme.apply(
-        bodyColor: AppColors.textPrimary,
-        displayColor: AppColors.textPrimary,
-      ),
+      textTheme: textTheme,
       dividerTheme: const DividerThemeData(
         color: AppColors.border,
         thickness: 1,
@@ -61,7 +66,10 @@ abstract final class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size(0, AppSpacing.minTapTarget + 8),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          textStyle: textTheme.labelLarge?.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm + 2),
           ),
@@ -70,6 +78,10 @@ abstract final class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           minimumSize: const Size(0, AppSpacing.minTapTarget),
+          textStyle: textTheme.labelLarge?.copyWith(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
           foregroundColor: AppColors.textPrimary,
           side: const BorderSide(color: AppColors.border),
           shape: RoundedRectangleBorder(
@@ -80,6 +92,10 @@ abstract final class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           minimumSize: const Size(0, AppSpacing.minTapTarget),
+          textStyle: textTheme.labelLarge?.copyWith(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
           foregroundColor: AppColors.accent,
         ),
       ),
@@ -90,7 +106,7 @@ abstract final class AppTheme {
         height: 68,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith(
-          (states) => TextStyle(
+          (states) => textTheme.labelSmall?.copyWith(
             fontSize: 11,
             fontWeight: FontWeight.w600,
             color: states.contains(WidgetState.selected)
@@ -107,6 +123,32 @@ abstract final class AppTheme {
           ),
         ),
       ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected)
+                ? AppColors.accent.withValues(alpha: 0.18)
+                : AppColors.surfaceHigh,
+          ),
+          foregroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected)
+                ? AppColors.accent
+                : AppColors.textSecondary,
+          ),
+          side: const WidgetStatePropertyAll(
+            BorderSide(color: AppColors.border),
+          ),
+          textStyle: WidgetStatePropertyAll(
+            textTheme.labelLarge?.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          minimumSize: const WidgetStatePropertyAll(
+            Size(0, AppSpacing.minTapTarget),
+          ),
+        ),
+      ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.surface,
         surfaceTintColor: Colors.transparent,
@@ -117,9 +159,11 @@ abstract final class AppTheme {
           ),
         ),
       ),
-      snackBarTheme: const SnackBarThemeData(
+      snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.surfaceHigh,
-        contentTextStyle: TextStyle(color: AppColors.textPrimary),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: AppColors.textPrimary,
+        ),
         behavior: SnackBarBehavior.floating,
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(

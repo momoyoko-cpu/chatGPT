@@ -138,8 +138,9 @@ class HomePage extends ConsumerWidget {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: AppColors.accent.withValues(alpha: 0.14),
-                            borderRadius:
-                                BorderRadius.circular(AppSpacing.radiusSm),
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.radiusSm,
+                            ),
                           ),
                           child: Text(
                             '${review.score}',

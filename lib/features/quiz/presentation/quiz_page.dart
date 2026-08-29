@@ -148,8 +148,9 @@ class _QuizQuestionView extends StatelessWidget {
           QuizExplanationView(
             quiz: quiz,
             isCorrect: quiz.isCorrect(selectedChoiceId!),
-            onOpenRange:
-                rangeSpotId == null ? null : () => onOpenRange(rangeSpotId),
+            onOpenRange: rangeSpotId == null
+                ? null
+                : () => onOpenRange(rangeSpotId),
           ),
           const SizedBox(height: AppSpacing.md),
           FilledButton.icon(

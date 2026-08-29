@@ -54,12 +54,14 @@ class _Chip extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        // Container に alignment を渡すと横幅いっぱいに広がってしまい、
+        // Wrap の中で 1 行 1 チップになる。Center(widthFactor: 1) で
+        // 幅は中身なり・高さはタップ領域の 44px を保つ。
         child: Container(
           constraints: const BoxConstraints(
             minHeight: AppSpacing.minTapTarget,
             minWidth: AppSpacing.minTapTarget + 8,
           ),
-          alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -67,14 +69,17 @@ class _Chip extends StatelessWidget {
               color: isSelected ? AppColors.accent : AppColors.border,
             ),
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: isSelected
-                  ? const Color(0xFF04231A)
-                  : AppColors.textSecondary,
+          child: Center(
+            widthFactor: 1,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: isSelected
+                    ? const Color(0xFF04231A)
+                    : AppColors.textSecondary,
+              ),
             ),
           ),
         ),

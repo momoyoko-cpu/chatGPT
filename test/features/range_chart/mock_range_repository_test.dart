@@ -13,7 +13,11 @@ void main() {
     for (final tableType in TableType.values) {
       for (final position in Position.orderFor(tableType)) {
         final chart = repository.chartFor(tableType, position);
-        expect(chart, isNotNull, reason: '${tableType.label} ${position.label}');
+        expect(
+          chart,
+          isNotNull,
+          reason: '${tableType.label} ${position.label}',
+        );
         expect(chart!.entries, hasLength(169));
       }
     }
@@ -56,8 +60,7 @@ void main() {
 
   test('BB はディフェンス表になり 3Bet と Call を含む', () {
     final chart = repository.chartFor(TableType.sixMax, Position.bb)!;
-    final actions =
-        chart.entries.values.map((entry) => entry.action).toSet();
+    final actions = chart.entries.values.map((entry) => entry.action).toSet();
     expect(actions, contains(RangeAction.threeBet));
     expect(actions, contains(RangeAction.call));
   });

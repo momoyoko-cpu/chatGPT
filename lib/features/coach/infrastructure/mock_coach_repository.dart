@@ -36,17 +36,18 @@ class MockCoachRepository implements CoachRepository {
 
     final focus = weak.isEmpty
         ? (stats.totalAnswered < 10
-            ? 'まずは幅広いカテゴリを一巡しましょう。数問解くと、苦手分野が自動で見えてきます。'
-            : '大きな苦手はまだ検出されていません。今日はレンジ表を1ポジション選んで、上下の境界を覚えましょう。')
-        : '${weak.map((category) => category.label).join(' と ')} を重点的に練習しましょう。'
-            'ここが安定すると、他の判断も一緒に楽になります。';
+              ? 'まずは幅広いカテゴリを一巡しましょう。数問解くと、苦手分野が自動で見えてきます。'
+              : '大きな苦手はまだ検出されていません。今日はレンジ表を1ポジション選んで、上下の境界を覚えましょう。')
+        : '${weak.map((category) => category.label).join('・')} を重点的に練習しましょう。'
+              'ここが安定すると、他の判断も一緒に楽になります。';
 
     final growth = switch (0) {
       _ when strong.isNotEmpty =>
-        '${strong.map((category) => category.label).join(' / ')} はかなり安定しています。'
+        '${strong.map((category) => category.label).join('・')} はかなり安定しています。'
             'この分野は自信を持って判断して大丈夫です。',
-      _ when stats.accuracyLast7Days > stats.accuracyPreviousWeek &&
-          stats.accuracyPreviousWeek > 0 =>
+      _
+          when stats.accuracyLast7Days > stats.accuracyPreviousWeek &&
+              stats.accuracyPreviousWeek > 0 =>
         '直近7日の正答率が、その前の週より '
             '${((stats.accuracyLast7Days - stats.accuracyPreviousWeek) * 100).round()} ポイント上がっています。',
       _ when stats.reviewCount > 0 =>
@@ -58,12 +59,12 @@ class MockCoachRepository implements CoachRepository {
     final improvement = weak.isEmpty
         ? '苦手分野を出すには、各カテゴリ3問以上の回答が必要です。今日の10問を解き進めましょう。'
         : '${weak.first.label} の正答率が伸び悩んでいます。'
-            '間違えた問題の「よくあるミス」を、答え合わせのときに必ず読んでください。';
+              '間違えた問題の「よくあるミス」を、答え合わせのときに必ず読んでください。';
 
     final tomorrow = weak.isEmpty
         ? '明日は今日と別のカテゴリに触れて、判断の幅を広げましょう。'
         : '明日も ${weak.first.label} から始めて、正答率が上がるか確認しましょう。'
-            '同じテーマを2〜3日続けるのが一番効率的です。';
+              '同じテーマを2〜3日続けるのが一番効率的です。';
 
     return CoachBriefing(
       messages: [

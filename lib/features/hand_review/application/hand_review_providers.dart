@@ -83,10 +83,10 @@ class HandReviewForm extends Notifier<HandReviewInput> {
       _mutateActions(street, (actions) => [...actions, action]);
 
   void removeLastAction(Street street) => _mutateActions(
-        street,
-        (actions) =>
-            actions.isEmpty ? actions : actions.sublist(0, actions.length - 1),
-      );
+    street,
+    (actions) =>
+        actions.isEmpty ? actions : actions.sublist(0, actions.length - 1),
+  );
 
   void _mutateActions(
     Street street,
@@ -146,5 +146,5 @@ class HandReviewController extends Notifier<AsyncValue<HandReviewRecord?>> {
 
 final handReviewControllerProvider =
     NotifierProvider<HandReviewController, AsyncValue<HandReviewRecord?>>(
-  HandReviewController.new,
-);
+      HandReviewController.new,
+    );

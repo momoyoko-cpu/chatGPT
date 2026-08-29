@@ -29,8 +29,9 @@ class PositionSelection extends Notifier<Position> {
   void select(Position position) => state = position;
 }
 
-final selectedPositionProvider =
-    NotifierProvider<PositionSelection, Position>(PositionSelection.new);
+final selectedPositionProvider = NotifierProvider<PositionSelection, Position>(
+  PositionSelection.new,
+);
 
 /// 現在の選択に対応するレンジ表。
 final selectedRangeChartProvider = Provider<RangeChart?>((ref) {
@@ -40,7 +41,9 @@ final selectedRangeChartProvider = Provider<RangeChart?>((ref) {
 });
 
 /// スポット ID を指定して取得する（クイズ解説からのリンク用）。
-final rangeChartByIdProvider =
-    Provider.family<RangeChart?, String>((ref, spotId) {
+final rangeChartByIdProvider = Provider.family<RangeChart?, String>((
+  ref,
+  spotId,
+) {
   return ref.watch(rangeRepositoryProvider).chartById(spotId);
 });

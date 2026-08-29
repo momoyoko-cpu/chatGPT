@@ -1,0 +1,253 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/section_header.dart';
+import '../../../shared/widgets/stat_tile.dart';
+import '../../../shared/widgets/tag_chip.dart';
+import '../application/learning_providers.dart';
+import 'widgets/category_accuracy_list.dart';
+
+/// マイページ / 学習履歴。
+class ProfilePage extends ConsumerWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider);
+    final stats = ref.watch(learningStatsProvider);
+    final reviews = ref.watch(handReviewHistoryProvider);
+    final weak = stats.weakCategories();
+    final strong = stats.strongCategories();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('マイページ'),
+        actions: [
+          IconButton(
+            tooltip: '設定',
+            onPressed: () => context.go('/profile/settings'),
+            icon: const Icon(Icons.settings_outlined),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.sm,
+            AppSpacing.lg,
+            AppSpacing.xxl,
+          ),
+          children: [
+            AppCard(
+              child: Row(
+                children: [
+                  Container(
+                    width: 56,
+                    height: 56,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AppColors.accent.withValues(alpha: 0.16),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
+                    child: Text(
+                      'Lv.${stats.level}',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.accent,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.lg),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          profile.displayName,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${profile.pokerLevel.label} ・ 学習${profile.daysSinceJoined}日目',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: StatTile(
+                    label: '連続学習',
+                    value: '${stats.streakDays}',
+                    unit: '日',
+                    icon: Icons.local_fire_department_rounded,
+                    valueColor: AppColors.warning,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: StatTile(
+                    label: '解いた問題',
+                    value: '${stats.totalAnswered}',
+                    unit: '問',
+                    icon: Icons.quiz_outlined,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              children: [
+                Expanded(
+                  child: StatTile(
+                    label: '総合正答率',
+                    value: '${(stats.accuracy * 100).round()}',
+                    unit: '%',
+                    icon: Icons.percent_rounded,
+                    valueColor: AppColors.accent,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: StatTile(
+                    label: 'レビュー',
+                    value: '${reviews.length}',
+                    unit: '件',
+                    icon: Icons.rate_review_outlined,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              children: [
+                Expanded(
+                  child: StatTile(
+                    label: '直近7日の学習日',
+                    value: '${stats.activeDaysLast7}',
+                    unit: '日',
+                    icon: Icons.calendar_today_rounded,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: StatTile(
+                    label: '直近30日の学習日',
+                    value: '${stats.activeDaysLast30}',
+                    unit: '日',
+                    icon: Icons.calendar_month_rounded,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            const SectionHeader(
+              title: '得意 / 苦手',
+              subtitle: '各カテゴリ3問以上で判定します',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '得意分野',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.success,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  if (strong.isEmpty)
+                    const Text(
+                      'まだ判定できていません。',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textMuted,
+                      ),
+                    )
+                  else
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.sm,
+                      children: [
+                        for (final category in strong)
+                          TagChip(
+                            label: category.label,
+                            color: AppColors.success,
+                            icon: Icons.check_rounded,
+                          ),
+                      ],
+                    ),
+                  const Divider(height: AppSpacing.xl),
+                  const Text(
+                    '苦手分野',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.danger,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  if (weak.isEmpty)
+                    const Text(
+                      'まだ判定できていません。',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textMuted,
+                      ),
+                    )
+                  else
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.sm,
+                      children: [
+                        for (final category in weak)
+                          TagChip(
+                            label: category.label,
+                            color: AppColors.danger,
+                            icon: Icons.priority_high_rounded,
+                          ),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            const SectionHeader(title: 'カテゴリ別の正答率'),
+            const SizedBox(height: AppSpacing.md),
+            AppCard(
+              child: stats.categoryStats.isEmpty
+                  ? const EmptyState(
+                      icon: Icons.bar_chart_rounded,
+                      title: 'まだデータがありません',
+                      message: '今日の10問を解くとここに表示されます。',
+                    )
+                  : CategoryAccuracyList(stats: stats.categoryStats),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

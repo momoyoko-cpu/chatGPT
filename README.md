@@ -112,10 +112,17 @@ Flutter Web ビルドを GitHub Pages へ自動公開している
 
 <https://momoyoko-cpu.github.io/chatGPT/>
 
-初回だけリポジトリ設定が必要:
+公開は **`main` へマージされた時点**で自動的に行われる。
+GitHub が自動生成する `github-pages` 環境は、既定でデフォルトブランチ以外からの
+デプロイを拒否するため、機能ブランチからは公開せず、
+ビルド結果を workflow artifact（`web-build`）としてのみ残す。
+
+機能ブランチからもプレビューしたい場合は
+**Settings → Environments → github-pages → Deployment branches and tags**
+に該当ブランチを追加したうえで、`pages.yml` の `deploy` ジョブの `if` を緩める。
+
+前提となるリポジトリ設定（初回のみ・手動）:
 **Settings → Pages → Build and deployment → Source** を `GitHub Actions` にする。
-Actions のトークンでは Pages サイトを新規作成できないため、
-未設定のうちはデプロイを飛ばし、ビルド結果を workflow artifact（`web-build`）としてのみ残す。
 
 スマートフォン向けのレイアウトなので、PC のブラウザではデベロッパーツールの
 デバイスモード（iPhone 等）で見ると実機に近い表示になる。

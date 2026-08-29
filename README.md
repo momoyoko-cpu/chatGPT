@@ -112,6 +112,11 @@ Flutter Web ビルドを GitHub Pages へ自動公開している
 
 <https://momoyoko-cpu.github.io/chatGPT/>
 
+初回だけリポジトリ設定が必要:
+**Settings → Pages → Build and deployment → Source** を `GitHub Actions` にする。
+Actions のトークンでは Pages サイトを新規作成できないため、
+未設定のうちはデプロイを飛ばし、ビルド結果を workflow artifact（`web-build`）としてのみ残す。
+
 スマートフォン向けのレイアウトなので、PC のブラウザではデベロッパーツールの
 デバイスモード（iPhone 等）で見ると実機に近い表示になる。
 

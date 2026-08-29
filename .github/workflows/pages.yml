@@ -2,6 +2,11 @@ name: Deploy web preview
 
 # 実機がなくても動作を確認できるように、Flutter Web ビルドを
 # GitHub Pages へ公開する。公開先は公開リポジトリと同じく誰でも閲覧できる。
+#
+# 初回だけリポジトリ設定が必要:
+#   Settings → Pages → Build and deployment → Source を "GitHub Actions" にする。
+# Actions のトークンでは Pages サイトを新規作成できないため、
+# 未設定のうちはデプロイを飛ばし、ビルド成果物だけを artifact として残す。
 on:
   push:
     branches:
@@ -21,6 +26,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      pages_ready: ${{ steps.configure.outcome == 'success' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -41,16 +48,34 @@ jobs:
             --no-web-resources-cdn \
             --base-href "/${GITHUB_REPOSITORY#*/}/"
 
-      - uses: actions/configure-pages@v5
+      # Pages が未設定でも成果物を取り出せるようにしておく。
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
         with:
-          enablement: true
+          name: web-build
+          path: build/web
+          retention-days: 14
+
+      # Pages 未設定なら失敗させず、案内だけ出してデプロイを飛ばす。
+      - id: configure
+        uses: actions/configure-pages@v5
+        continue-on-error: true
+
+      - name: Pages が未設定
+        if: steps.configure.outcome != 'success'
+        run: |
+          echo "::warning::GitHub Pages が有効になっていません。" \
+               "Settings → Pages → Source を 'GitHub Actions' にすると、" \
+               "次回の push から自動で公開されます。"
 
       - uses: actions/upload-pages-artifact@v3
+        if: steps.configure.outcome == 'success'
         with:
           path: build/web
 
   deploy:
     needs: build
+    if: needs.build.outputs.pages_ready == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

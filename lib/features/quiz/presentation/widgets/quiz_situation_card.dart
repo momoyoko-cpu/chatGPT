@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/playing_card_view.dart';
+import '../../../../shared/widgets/poker_table_view.dart';
 import '../../domain/quiz.dart';
 
 /// クイズのゲーム状況を表示するカード。
@@ -25,42 +26,37 @@ class QuizSituationCard extends StatelessWidget {
               _MetaPill(text: situation.tableType.label),
               _MetaPill(text: situation.blindsLabel),
               _MetaPill(text: '${situation.effectiveStackBb.toInt()}BB'),
-              _MetaPill(text: 'Pot ${_formatBb(situation.potBb)}BB'),
             ],
           ),
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              _PositionBadge(
-                label: 'あなた',
-                position: situation.heroPosition.label,
-                color: AppColors.accent,
-              ),
-              if (situation.villainPosition != null) ...[
-                const SizedBox(width: AppSpacing.sm),
-                const Icon(
-                  Icons.swap_horiz_rounded,
-                  size: 18,
-                  color: AppColors.textMuted,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                _PositionBadge(
-                  label: '相手',
-                  position: situation.villainPosition!.label,
-                  color: AppColors.info,
-                ),
-              ],
-            ],
+          const SizedBox(height: AppSpacing.md),
+          PokerTableView(
+            tableType: situation.tableType,
+            heroPosition: situation.heroPosition,
+            villainPosition: situation.villainPosition,
+            potLabel: 'Pot ${_formatBb(situation.potBb)}BB',
           ),
+          const SizedBox(height: AppSpacing.sm),
+          const _Legend(),
           const SizedBox(height: AppSpacing.lg),
           const _FieldLabel('あなたのハンド'),
           const SizedBox(height: AppSpacing.sm),
-          PlayingCardRow(cards: situation.heroCards, width: 44),
+          PlayingCardRow(
+            cards: situation.heroCards,
+            width: 44,
+            dealAnimation: true,
+          ),
           if (situation.board.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.lg),
             _FieldLabel('ボード（${situation.street.label}）'),
             const SizedBox(height: AppSpacing.sm),
-            PlayingCardRow(cards: situation.board, width: 38),
+            PlayingCardRow(
+              cards: situation.board,
+              width: 38,
+              dealAnimation: true,
+              dealDelay: Duration(
+                milliseconds: 90 * situation.heroCards.length,
+              ),
+            ),
           ],
           if (situation.actionHistory.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.lg),
@@ -150,46 +146,52 @@ class _MetaPill extends StatelessWidget {
   }
 }
 
-class _PositionBadge extends StatelessWidget {
-  const _PositionBadge({
-    required this.label,
-    required this.position,
-    required this.color,
-  });
-
-  final String label;
-  final String position;
-  final Color color;
+class _Legend extends StatelessWidget {
+  const _Legend();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+    return Row(
+      children: [
+        const _LegendDot(color: AppColors.accent, label: 'あなた'),
+        const SizedBox(width: AppSpacing.lg),
+        const _LegendDot(color: AppColors.info, label: '相手'),
+        const Spacer(),
+        const Text(
+          'D = ディーラーボタン',
+          style: TextStyle(fontSize: 10, color: AppColors.textMuted),
+        ),
+      ],
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  const _LegendDot({required this.color, required this.label});
+
+  final Color color;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 9,
+          height: 9,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: AppSpacing.xs),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textSecondary,
           ),
-          Text(
-            position,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              color: color,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

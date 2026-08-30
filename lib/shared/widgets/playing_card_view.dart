@@ -77,26 +77,105 @@ class PlayingCardView extends StatelessWidget {
 }
 
 /// カードを横並びで表示する。
+///
+/// [dealAnimation] を有効にすると、1 枚ずつめくれるように現れる。
 class PlayingCardRow extends StatelessWidget {
   const PlayingCardRow({
     super.key,
     required this.cards,
     this.width = 40,
     this.spacing = AppSpacing.sm,
+    this.dealAnimation = false,
+    this.dealDelay = Duration.zero,
   });
 
   final List<PlayingCard> cards;
   final double width;
   final double spacing;
+  final bool dealAnimation;
+
+  /// 1 枚目が現れるまでの待ち時間。
+  final Duration dealDelay;
 
   @override
   Widget build(BuildContext context) {
+    final animate = dealAnimation && !MediaQuery.disableAnimationsOf(context);
     return Wrap(
       spacing: spacing,
       runSpacing: spacing,
       children: [
-        for (final card in cards) PlayingCardView(card: card, width: width),
+        for (var i = 0; i < cards.length; i++)
+          if (animate)
+            _DealtCard(
+              key: ValueKey('${cards[i].code}-$i'),
+              card: cards[i],
+              width: width,
+              delay: dealDelay + Duration(milliseconds: 90 * i),
+            )
+          else
+            PlayingCardView(card: cards[i], width: width),
       ],
+    );
+  }
+}
+
+/// 配られたように現れる 1 枚。
+class _DealtCard extends StatefulWidget {
+  const _DealtCard({
+    super.key,
+    required this.card,
+    required this.width,
+    required this.delay,
+  });
+
+  final PlayingCard card;
+  final double width;
+  final Duration delay;
+
+  @override
+  State<_DealtCard> createState() => _DealtCardState();
+}
+
+class _DealtCardState extends State<_DealtCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 380),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(widget.delay, () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final curved = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+    );
+    return AnimatedBuilder(
+      animation: curved,
+      builder: (context, child) {
+        final value = curved.value.clamp(0.0, 1.0);
+        return Opacity(
+          opacity: _controller.value.clamp(0.0, 1.0),
+          child: Transform.translate(
+            offset: Offset(0, 10 * (1 - value)),
+            child: Transform.scale(scale: 0.88 + 0.12 * value, child: child),
+          ),
+        );
+      },
+      child: PlayingCardView(card: widget.card, width: widget.width),
     );
   }
 }

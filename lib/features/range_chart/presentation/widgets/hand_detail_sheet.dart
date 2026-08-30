@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../shared/widgets/collapsible_section.dart';
 import '../../domain/range_action.dart';
 import '../../domain/range_guidance.dart';
 
@@ -90,9 +91,26 @@ class HandDetailSheet extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
               _Section(title: 'なぜこのアクションか', body: guidance.reason),
-              _Section(title: '初心者向け', body: guidance.beginnerNote),
-              _Section(title: 'GTO解説', body: guidance.gtoNote),
-              _Section(title: '実戦での調整', body: guidance.practicalNote),
+              // 補足はタップで開く。開いた瞬間の文字量を抑える。
+              CollapsibleSection(
+                icon: Icons.school_rounded,
+                title: '初心者向け',
+                body: guidance.beginnerNote,
+                accent: AppColors.accent,
+              ),
+              CollapsibleSection(
+                icon: Icons.functions_rounded,
+                title: 'GTO解説',
+                body: guidance.gtoNote,
+                accent: AppColors.info,
+              ),
+              CollapsibleSection(
+                icon: Icons.sports_esports_rounded,
+                title: '実戦での調整',
+                body: guidance.practicalNote,
+                accent: AppColors.warning,
+              ),
+              const SizedBox(height: AppSpacing.md),
               if (onPractice != null) ...[
                 const SizedBox(height: AppSpacing.sm),
                 SizedBox(

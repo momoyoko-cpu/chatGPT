@@ -7,8 +7,10 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/fade_slide_in.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/tag_chip.dart';
+import '../../../shared/widgets/trend_chart.dart';
 import '../../coach/application/coach_providers.dart';
 import '../../coach/domain/coach_message.dart';
 import '../../profile/application/learning_providers.dart';
@@ -40,11 +42,16 @@ class HomePage extends ConsumerWidget {
             AppSpacing.xxl,
           ),
           children: [
-            HomeHeader(profile: profile, stats: stats),
+            FadeSlideIn(
+              child: HomeHeader(profile: profile, stats: stats),
+            ),
             const SizedBox(height: AppSpacing.xl),
-            DailyQuizCard(
-              session: session,
-              onStart: () => context.go(AppRoutes.quiz),
+            FadeSlideIn(
+              delay: const Duration(milliseconds: 80),
+              child: DailyQuizCard(
+                session: session,
+                onStart: () => context.go(AppRoutes.quiz),
+              ),
             ),
             const SizedBox(height: AppSpacing.xl),
             const SectionHeader(
@@ -61,13 +68,21 @@ class HomePage extends ConsumerWidget {
                 icon: Icons.center_focus_strong_rounded,
                 accent: AppColors.info,
               ),
+            const SizedBox(height: AppSpacing.xl),
+            const SectionHeader(title: '正答率の推移', subtitle: '直近14日'),
             const SizedBox(height: AppSpacing.md),
-            if (briefing.of(CoachMessageType.growth) case final growth?)
-              CoachMessageCard(
-                message: growth,
-                icon: Icons.trending_up_rounded,
-                accent: AppColors.warning,
+            AppCard(
+              child: TrendChart(
+                points: [
+                  for (final day in stats.dailyAccuracy())
+                    TrendPoint(
+                      label: '${day.day.month}/${day.day.day}',
+                      value: day.accuracy,
+                    ),
+                ],
+                height: 88,
               ),
+            ),
             const SizedBox(height: AppSpacing.xl),
             SectionHeader(
               title: '苦手分野',

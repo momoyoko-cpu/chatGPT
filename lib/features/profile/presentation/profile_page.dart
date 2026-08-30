@@ -9,6 +9,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/stat_tile.dart';
 import '../../../shared/widgets/tag_chip.dart';
+import '../../../shared/widgets/trend_chart.dart';
 import '../application/learning_providers.dart';
 import 'widgets/category_accuracy_list.dart';
 
@@ -231,7 +232,22 @@ class ProfilePage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
-            const SectionHeader(title: 'カテゴリ別の正答率'),
+            const SectionHeader(title: '正答率の推移', subtitle: '直近14日'),
+            const SizedBox(height: AppSpacing.md),
+            AppCard(
+              child: TrendChart(
+                points: [
+                  for (final day in stats.dailyAccuracy())
+                    TrendPoint(
+                      label: '${day.day.month}/${day.day.day}',
+                      value: day.accuracy,
+                    ),
+                ],
+                height: 110,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            const SectionHeader(title: 'カテゴリ別の正答率', subtitle: '外側に膨らむほど得意'),
             const SizedBox(height: AppSpacing.md),
             AppCard(
               child: stats.categoryStats.isEmpty
@@ -240,7 +256,7 @@ class ProfilePage extends ConsumerWidget {
                       title: 'まだデータがありません',
                       message: '今日の10問を解くとここに表示されます。',
                     )
-                  : CategoryAccuracyList(stats: stats.categoryStats),
+                  : CategoryAccuracyChart(stats: stats.categoryStats),
             ),
           ],
         ),

@@ -7,7 +7,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/models/playing_card.dart';
 import '../../../shared/models/poker_action.dart';
-import '../../../shared/models/position.dart';
 import '../../../shared/models/street.dart';
 import '../../../shared/models/table_type.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -19,6 +18,7 @@ import 'widgets/action_builder.dart';
 import 'widgets/card_picker_sheet.dart';
 import 'widgets/card_slot_row.dart';
 import 'widgets/form_section.dart';
+import 'widgets/position_picker.dart';
 
 /// ハンドレビューの入力画面。テキスト入力を最小限にする。
 class HandReviewPage extends ConsumerWidget {
@@ -38,7 +38,6 @@ class HandReviewPage extends ConsumerWidget {
     final form = ref.read(handReviewFormProvider.notifier);
     final submission = ref.watch(handReviewControllerProvider);
     final history = ref.watch(handReviewHistoryProvider);
-    final positions = Position.orderFor(input.tableType);
 
     ref.listen(handReviewControllerProvider, (previous, next) {
       if (next.value != null) {
@@ -141,56 +140,39 @@ class HandReviewPage extends ConsumerWidget {
               ),
             ),
             FormSection(
-              title: 'あなたのポジションとハンド',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ChoiceChipGroup<Position>(
-                    values: positions,
-                    selected: input.heroPosition,
-                    labelBuilder: (value) => value.label,
-                    onSelected: form.setHeroPosition,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  CardSlotRow(
-                    cards: input.heroHand,
-                    slotCount: 2,
-                    onTap: () => _pickCards(
-                      context: context,
-                      ref: ref,
-                      title: 'あなたのハンドを選択',
-                      maxCount: 2,
-                      current: input.heroHand,
-                      onSelected: form.setHeroHand,
-                    ),
-                  ),
-                ],
+              title: 'ポジション',
+              subtitle: 'テーブルの席をタップして選びます',
+              child: PositionPicker(
+                tableType: input.tableType,
+                heroPosition: input.heroPosition,
+                villainPosition: input.villainPosition,
+                onHeroChanged: form.setHeroPosition,
+                onVillainChanged: form.setVillainPosition,
               ),
             ),
             FormSection(
-              title: '相手',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ChoiceChipGroup<Position>(
-                    values: positions,
-                    selected: input.villainPosition,
-                    labelBuilder: (value) => value.label,
-                    onSelected: form.setVillainPosition,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  const Text(
-                    '相手の特徴（任意）',
-                    style: TextStyle(fontSize: 11, color: AppColors.textMuted),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  ChoiceChipGroup<VillainProfile>(
-                    values: VillainProfile.values,
-                    selected: input.villainProfile,
-                    labelBuilder: (value) => value.label,
-                    onSelected: form.setVillainProfile,
-                  ),
-                ],
+              title: 'あなたのハンド',
+              child: CardSlotRow(
+                cards: input.heroHand,
+                slotCount: 2,
+                onTap: () => _pickCards(
+                  context: context,
+                  ref: ref,
+                  title: 'あなたのハンドを選択',
+                  maxCount: 2,
+                  current: input.heroHand,
+                  onSelected: form.setHeroHand,
+                ),
+              ),
+            ),
+            FormSection(
+              title: '相手の特徴',
+              subtitle: '任意。実戦調整のコメントが変わります',
+              child: ChoiceChipGroup<VillainProfile>(
+                values: VillainProfile.values,
+                selected: input.villainProfile,
+                labelBuilder: (value) => value.label,
+                onSelected: form.setVillainProfile,
               ),
             ),
             FormSection(

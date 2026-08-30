@@ -31,7 +31,10 @@
 ### 毎日の10問クイズ
 - 20 問のクイズバンクから、**日付をシードにして毎日同じ 10 問**を出題する
 - 学習履歴から算出した**苦手カテゴリを優先**して出題する
-- 回答後に「理由 / GTO視点 / 実戦での調整 / よくある初心者のミス」の 4 点セットを表示
+- 状況は**円卓の図**で示す。ヒーロー / 相手の席とディーラーボタンが一目で分かる
+- ハンドとボードは 1 枚ずつ配られるように現れる
+- 回答後はまず「正解 / 不正解」と「短い理由」だけを見せ、
+  GTO視点 / 実戦での調整 / よくあるミスは**折りたたんで**必要なものだけ開く
 - 関連するレンジ表への導線つき
 - 10 問終了後に正答率と次回の課題を表示
 
@@ -60,7 +63,27 @@
 
 ### マイページ / 学習履歴
 レベル、連続学習日数、解いた問題数、総合正答率、レビュー件数、
-直近 7 日 / 30 日の学習日数、得意 / 苦手分野、カテゴリ別の正答率。
+直近 7 日 / 30 日の学習日数、得意 / 苦手分野。
+さらに **正答率の推移（直近14日のエリアチャート）** と
+**カテゴリ別のレーダーチャート**（外側に膨らむほど得意・70%の合格ラインつき）で、
+数字の羅列ではなく形で強弱が読めるようにしている。
+
+### 図とアニメーション
+
+テキスト量を減らし、状態を形で伝えるための共通ウィジェットを `lib/shared/widgets/` に置いている。
+
+| ウィジェット | 役割 |
+| --- | --- |
+| `PokerTableView` | 円卓の席図。ヒーロー / 相手 / ディーラーボタンを描く |
+| `TrendChart` | 正答率の推移（エリアチャート・左から描画） |
+| `RadarChart` | カテゴリ別の得意 / 苦手 |
+| `ScoreRing` | 総合評価の円グラフ。数字がカウントアップする |
+| `CollapsibleSection` | 長い解説をたたんでおく |
+| `FadeSlideIn` | 画面を開いたときに順に立ち上がる |
+
+`CustomPainter` で文字を描くときは `canvasTextStyle(context)` を土台にすること。
+[TextPainter] は `DefaultTextStyle` を引き継がないため、素の `TextStyle` を渡すと
+`ThemeData.fontFamily` が効かず日本語が豆腐（□）になる。
 
 ## 技術構成
 
@@ -136,7 +159,7 @@ flutter run -d chrome       # ブラウザ
 
 dart format lib test        # CI で差分チェックあり
 flutter analyze             # 警告ゼロを維持する
-flutter test                # 67 テスト
+flutter test                # 80 テスト
 ```
 
 ### テスト
@@ -149,6 +172,8 @@ flutter test                # 67 テスト
 | `test/features/quiz/daily_quiz_test.dart` | クイズバンクの整合性と 10 問の進行 |
 | `test/features/profile/learning_stats_test.dart` | 連続学習日数と苦手分野の算出 |
 | `test/features/hand_review/hand_review_test.dart` | 入出力 JSON・ボード質感・解析ロジック |
+| `test/features/profile/daily_accuracy_test.dart` | 日別正答率の集計 |
+| `test/shared/visual_widgets_test.dart` | 図・グラフ・折りたたみの挙動、キャンバス文字のフォント |
 | `test/app/app_smoke_test.dart` | 5 画面の表示とタブ遷移 |
 
 `flutter analyze` / `flutter test` / `dart format` は push と PR で CI が自動実行する

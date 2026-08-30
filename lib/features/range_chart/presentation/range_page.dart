@@ -10,6 +10,7 @@ import '../../../shared/models/table_type.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/choice_chip_group.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/fade_slide_in.dart';
 import '../application/range_providers.dart';
 import '../domain/range_action.dart';
 import '../domain/range_guidance.dart';
@@ -123,15 +124,18 @@ class RangePage extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              RangeMatrix(
-                chart: chart,
-                onHandTap: (hand) => _showHandDetail(
-                  context,
-                  ref,
-                  chart.spot,
-                  RangeGuidanceBuilder.build(
-                    spot: chart.spot,
-                    entry: chart.entryFor(hand),
+              FadeSlideIn(
+                key: ValueKey(chart.spot.id),
+                child: RangeMatrix(
+                  chart: chart,
+                  onHandTap: (hand) => _showHandDetail(
+                    context,
+                    ref,
+                    chart.spot,
+                    RangeGuidanceBuilder.build(
+                      spot: chart.spot,
+                      entry: chart.entryFor(hand),
+                    ),
                   ),
                 ),
               ),

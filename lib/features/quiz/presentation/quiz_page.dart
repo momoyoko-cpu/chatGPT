@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../shared/widgets/fade_slide_in.dart';
 import '../../range_chart/application/range_providers.dart';
 import '../application/quiz_providers.dart';
 import '../domain/quiz.dart';
@@ -135,13 +136,18 @@ class _QuizQuestionView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
-        for (final choice in quiz.choices)
-          QuizChoiceButton(
-            label: choice.label,
-            isRevealed: isRevealed,
-            isCorrectChoice: choice.id == quiz.correctChoiceId,
-            isSelected: choice.id == selectedChoiceId,
-            onTap: () => onAnswer(choice.id),
+        for (var i = 0; i < quiz.choices.length; i++)
+          FadeSlideIn(
+            // 問題が変わるたびに選択肢が順に立ち上がる。
+            key: ValueKey('${quiz.id}-${quiz.choices[i].id}'),
+            delay: Duration(milliseconds: 60 * i),
+            child: QuizChoiceButton(
+              label: quiz.choices[i].label,
+              isRevealed: isRevealed,
+              isCorrectChoice: quiz.choices[i].id == quiz.correctChoiceId,
+              isSelected: quiz.choices[i].id == selectedChoiceId,
+              onTap: () => onAnswer(quiz.choices[i].id),
+            ),
           ),
         if (isRevealed) ...[
           const SizedBox(height: AppSpacing.sm),

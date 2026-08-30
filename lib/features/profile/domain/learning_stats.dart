@@ -1,5 +1,23 @@
+import '../../../core/utils/date_x.dart';
 import '../../quiz/domain/quiz_attempt.dart';
 import '../../quiz/domain/quiz_category.dart';
+
+/// 1 日分の正答率。推移グラフの 1 点になる。
+class DailyAccuracy {
+  const DailyAccuracy({
+    required this.day,
+    required this.accuracy,
+    required this.answered,
+  });
+
+  final DateTime day;
+
+  /// 0.0〜1.0。その日に回答が無ければ 0。
+  final double accuracy;
+  final int answered;
+
+  bool get hasData => answered > 0;
+}
 
 /// カテゴリ別の正誤集計。Supabase の `learning_stats` に対応する。
 class CategoryStat {
@@ -97,6 +115,31 @@ class LearningStats {
     );
     if (window.isEmpty) return 0;
     return window.where((attempt) => attempt.isCorrect).length / window.length;
+  }
+
+  /// 直近 [days] 日の日別正答率。回答のあった日だけを返す。
+  ///
+  /// 推移グラフに使うため、古い日から新しい日の順に並ぶ。
+  List<DailyAccuracy> dailyAccuracy({int days = 14, DateTime? today}) {
+    final base = (today ?? DateTime.now()).dateOnly;
+    final byDay = <DateTime, List<QuizAttempt>>{};
+    for (final attempt in attempts) {
+      final day = attempt.answeredAt.dateOnly;
+      if (base.difference(day).inDays >= days) continue;
+      byDay.putIfAbsent(day, () => []).add(attempt);
+    }
+
+    final series = [
+      for (final entry in byDay.entries)
+        DailyAccuracy(
+          day: entry.key,
+          accuracy:
+              entry.value.where((attempt) => attempt.isCorrect).length /
+              entry.value.length,
+          answered: entry.value.length,
+        ),
+    ]..sort((a, b) => a.day.compareTo(b.day));
+    return series;
   }
 
   /// 経験値からレベルを決める簡易ロジック。

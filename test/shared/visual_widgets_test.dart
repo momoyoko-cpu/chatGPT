@@ -75,6 +75,63 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('テーブル図の席はタップで選べる', (tester) async {
+    final tapped = <Position>[];
+    await _pump(
+      tester,
+      SizedBox(
+        width: 320,
+        child: PokerTableView(
+          tableType: TableType.sixMax,
+          heroPosition: Position.utg,
+          rotateHeroToBottom: false,
+          onSeatTap: tapped.add,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // 6MAX なので席は 6 つぶんのタップ領域が並ぶ。
+    expect(find.bySemanticsLabel('BTN を選ぶ'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('BTN を選ぶ'));
+    expect(tapped, [Position.btn]);
+  });
+
+  testWidgets('表示専用のテーブル図にはタップ領域が無い', (tester) async {
+    await _pump(
+      tester,
+      const SizedBox(
+        width: 320,
+        child: PokerTableView(
+          tableType: TableType.sixMax,
+          heroPosition: Position.btn,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.bySemanticsLabel('BTN を選ぶ'), findsNothing);
+  });
+
+  testWidgets('席順はヒーローを手前に回すかどうかで変わる', (tester) async {
+    expect(
+      PokerTableView.seatOrder(
+        TableType.sixMax,
+        Position.btn,
+        rotateHeroToBottom: true,
+      ).first,
+      Position.btn,
+    );
+    expect(
+      PokerTableView.seatOrder(
+        TableType.sixMax,
+        Position.btn,
+        rotateHeroToBottom: false,
+      ).first,
+      Position.utg,
+    );
+  });
+
   testWidgets('推移グラフは点が1つ以下なら案内を出す', (tester) async {
     await _pump(
       tester,

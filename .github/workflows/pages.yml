@@ -49,10 +49,16 @@ jobs:
 
       # CanvasKit を同梱して CDN 依存を減らす。
       # base-href は Pages の配信パス (/<repo>/) に合わせる。
+      #
+      # --pwa-strategy=none で Service Worker を無効にする。
+      # 既定の Service Worker はアプリをキャッシュするため、デプロイ後に
+      # リロードしても古い画面が出てしまう（1 回目は旧版、2 回目でようやく新版）。
+      # 常に最新を見せたいプレビュー用途では邪魔になる。
       - name: Build web
         run: |
           flutter build web --release \
             --no-web-resources-cdn \
+            --pwa-strategy=none \
             --base-href "/${GITHUB_REPOSITORY#*/}/"
 
       # Pages が未設定でも成果物を取り出せるようにしておく。
